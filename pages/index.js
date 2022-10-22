@@ -4,7 +4,19 @@ import Link from "next/link";
 import Layout, { siteTitle } from "components/layout";
 import utilStyles from "styles/utils.module.css";
 
-export default function Home() {
+import { getSortedPostsData } from "lib/posts";
+
+export async function getStaticProps() {
+  const sortedPosts = getSortedPostsData();
+
+  return {
+    props: {
+      allPosts: sortedPosts,
+    },
+  };
+}
+
+export default function Home({ allPosts }) {
   return (
     <Layout home>
       <Head>
@@ -28,11 +40,38 @@ export default function Home() {
           .)
         </p>
       </section>
+      
       <section>
         Here is the top articles of the blog:
         <ul>
           <li>
-            <Link href="/posts/first-post">See first post</Link>
+            <Link href="/posts/first-post">See Lorem Ipsum post</Link>
+          </li>
+        </ul>
+      </section>
+
+      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
+        <h2 className={utilStyles.headingLg}>Fetching blogs</h2>
+        <ul className={utilStyles.list}>
+        {
+          allPosts.map(singlePost => (
+            <li className={utilStyles.listItem} key={singlePost.id}>
+              {singlePost.title}
+              <br />
+              {singlePost.id}
+              <br />
+              {singlePost.date}
+            </li>
+          ))
+        }
+        </ul>
+      </section>
+
+      <section>
+        Link to a page which contains some users data that has been fetching with getServerSideProps...
+        <ul>
+          <li>
+            <Link href="/users">Users</Link>
           </li>
         </ul>
       </section>
